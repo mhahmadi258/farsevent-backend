@@ -29,6 +29,9 @@ ALLOWED_HOSTS = []
 
 # add extera information
 
+AUTH_USER_MODEL = 'auth.User'
+AUTHENTICATION_BACKENDS = ['auth.backends.CustomAuthBackend']
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -43,7 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-
+    'auth.apps.AuthConfig',
 ]
 
 # add rest framework defaults here :
