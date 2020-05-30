@@ -1,9 +1,12 @@
 asgiref==3.2.7
+autopep8==1.4.4
 certifi==2020.4.5.1
 Django==3.0.6
 django-filter==2.2.0
 djangorestframework==3.11.0
 Markdown==3.2.2
+Pillow==7.1.2
+pycodestyle==2.6.0
 pytz==2020.1
 sqlparse==0.3.1
 wincertstore==0.2

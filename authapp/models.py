@@ -15,7 +15,7 @@ def user_image_upload_location(instance, filename):
 
 class User(AbstractUser):
     email = models.EmailField('email address', unique=True, blank=False)
-    phone = models.CharField('phone number', validators=(
+    phone = models.CharField('phone number', max_length = 11,validators=(
         phone_validator,), blank=True, null=False)
     image = models.ImageField(
         'profile photo', blank=True, null=True, upload_to=user_image_upload_location)
@@ -26,4 +26,4 @@ class User(AbstractUser):
 
 
 class City(models.Model):
-    name = models.CharField('city name')
+    name = models.CharField('city name' , max_length = 30)
