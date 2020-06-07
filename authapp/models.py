@@ -24,6 +24,18 @@ class User(AbstractUser):
                              on_delete=models.SET_NULL, blank=True, null=True)
     address = models.TextField('address',validators=(MaxLengthValidator(256),), blank=True)
 
+    def __str__(self):
+        return self.username
+
+    def __repr__(self):
+        return self.username
+
 
 class City(models.Model):
     name = models.CharField('city name' , max_length = 30)
+
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return self.name
