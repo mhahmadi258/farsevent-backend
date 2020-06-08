@@ -15,7 +15,7 @@ User = get_user_model()
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
     list_display = ('username', 'email', 'phone',)
-    list_filter = ('username', 'email', 'phone',)
+    list_filter = ('is_staff',)
     readonly_fields = ('image_preview', 'last_login', 'date_joined')
     fieldsets = [
         (None, {'fields': ('username', 'email', 'phone', 'password',)}),
