@@ -21,7 +21,7 @@ class User(AbstractUser):
     image = models.ImageField(
         'profile photo', blank=True, null=True, upload_to=user_image_upload_location)
     birth_date = models.DateField('birth date', blank=True, null=True)
-    city = models.ForeignKey('City', related_name='user',
+    city = models.ForeignKey('City', related_name='users',
                              on_delete=models.SET_NULL, blank=True, null=True)
     address = models.TextField('address', validators=(
         MaxLengthValidator(256),), blank=True, null=False)
