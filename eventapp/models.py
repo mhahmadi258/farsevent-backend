@@ -32,6 +32,12 @@ class Event(models.Model):
     tickets = models.ManyToManyField(
         'Ticket', related_name='events', on_delete=models.CASCADE, blank=False)
 
+    def __str__(self):
+        return self.title
+
+    def __repr__(self):
+        return self.title
+
 
 class Ticket(models.Model):
     title = title = models.CharField('title', max_length=30, blank=False)
@@ -42,12 +48,30 @@ class Ticket(models.Model):
     price = models.PositiveIntegerField(
         'price', blank=False)
 
+    def __str__(self):
+        return self.title
+
+    def __repr__(self):
+        return title
+
 
 class EventType(models.Model):
     name = models.CharField('type', unique=True,
                             max_length=30, blank=False, null=False)
 
+    def __str__(self):
+        return name
+
+    def __repr__(self):
+        return name
+
 
 class EventCategory(models.Model):
     name = models.CharField('category', unique=True,
                             max_length=30, blank=False, null=False)
+
+    def __str__(self):
+        return name
+
+    def __repr__(self):
+        return name
