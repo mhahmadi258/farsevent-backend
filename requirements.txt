@@ -2,6 +2,7 @@ asgiref==3.2.7
 autopep8==1.4.4
 certifi==2020.4.5.1
 Django==3.0.7
+django-cors-headers==3.4.0
 django-filter==2.2.0
 djangorestframework==3.11.0
 Markdown==3.2.2
