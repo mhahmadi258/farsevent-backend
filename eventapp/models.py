@@ -11,7 +11,12 @@ from .helper import generate_register_id
 
 def event_image_upload_location(instance, filename):
     filename, extension = os.path.splitext(filename)
-    return f'events/{instance.username}{time.time()}{extension}'
+    return f'events/{instance.title}{time.time()}{extension}'
+
+
+def event_category_image_upload_location(instance, filename):
+    filename, extension = os.path.splitext(filename)
+    return f'events-category/{instance.name}{time.time()}{extension}'
 
 
 class Event(models.Model):
@@ -114,6 +119,8 @@ class EventType(models.Model):
 class EventCategory(models.Model):
     name = models.CharField('category', unique=True,
                             max_length=30, blank=False, null=False)
+    image = models.ImageField(
+        'image', blank=True, null=True, upload_to=event_image_upload_location)
 
     def __str__(self):
         return name
