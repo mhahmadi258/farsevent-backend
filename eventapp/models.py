@@ -33,8 +33,6 @@ class Event(models.Model):
         'EventCategory', related_name='events', on_delete=models.CASCADE, blank=False)
     city = models.ForeignKey('authapp.City', related_name='events',
                              on_delete=models.CASCADE, blank=True, null=True)
-    tickets = models.ManyToManyField(
-        'Ticket', related_name='events', blank=False)
     owner = models.ForeignKey(
         'authapp.User', related_name='created_events', on_delete=models.CASCADE, blank=False)
 
@@ -55,6 +53,8 @@ class Ticket(models.Model):
         'price', blank=False)
     registered_users = models.ManyToManyField(
         'authapp.User', through='Register', related_name='tickets')
+    event = models.ForeignKey(
+        'Event', related_name='tickets', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
