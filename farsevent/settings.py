@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'authapp.apps.AuthappConfig',
+    'eventapp.apps.EventappConfig',
 ]
 
 # add rest framework defaults here :
