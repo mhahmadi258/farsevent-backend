@@ -2,7 +2,11 @@ import os
 import time
 
 from django.db import models
+from django.db.models import F
 from django.core.validators import MaxLengthValidator, MinValueValidator
+from django.core.exceptions import FieldError
+
+from .helper import generate_register_id
 
 
 def event_image_upload_location(instance, filename):
@@ -30,7 +34,9 @@ class Event(models.Model):
     city = models.ForeignKey('authapp.City', related_name='events',
                              on_delete=models.CASCADE, blank=True, null=True)
     tickets = models.ManyToManyField(
-        'Ticket', related_name='events', on_delete=models.CASCADE, blank=False)
+        'Ticket', related_name='events', blank=False)
+    owner = models.ForeignKey(
+        'authapp.User', related_name='created_events', on_delete=models.CASCADE, blank=False)
 
     def __str__(self):
         return self.title
@@ -47,12 +53,51 @@ class Ticket(models.Model):
         'capacity', validators=(MinValueValidator(1),), blank=False)
     price = models.PositiveIntegerField(
         'price', blank=False)
+    registered_users = models.ManyToManyField(
+        'authapp.User', through='Register', related_name='tickets')
 
     def __str__(self):
         return self.title
 
     def __repr__(self):
         return title
+
+
+class Register(models.Model):
+
+    class Conditions:
+        REGISTERED = 1
+        CANCELED = 2
+
+    condtion_choices = (
+        (Conditions.REGISTERED, 'registered'),
+        (Conditions.CANCELED, 'canceled'),
+    )
+    registration_id = models.CharField(
+        'registration id', max_length=100, blank=True, null=False)
+    user = models.ForeignKey(
+        'authapp.User', related_name='register', on_delete=models.CASCADE)
+    ticket = models.ForeignKey(
+        'Ticket', related_name='register', on_delete=models.CASCADE)
+    condition = models.PositiveSmallIntegerField(
+        'condition', choices=condtion_choices, blank=True, null=False)
+    register_time = models.DateTimeField(
+        'register time', auto_now_add=True, blank=True, null=False)
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            if self.ticket.capcity <= 0:
+                raise FieldError('there isn\'t any capcity to register user')
+            self.registration_id = generate_register_id(self.user, self.ticket)
+            self.condition = Conditions.REGISTERED
+            self.ticket.update(capcity=F('capcity')-1)
+        return super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.user.username} | {self.ticket.title}'
+
+    def __repr__(self):
+        return f'{self.user.username} | {self.ticket.title}'
 
 
 class EventType(models.Model):
