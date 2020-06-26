@@ -37,7 +37,7 @@ class Event(models.Model):
     event_category = models.ForeignKey(
         'EventCategory', related_name='events', on_delete=models.CASCADE, blank=False)
     city = models.ForeignKey('authapp.City', related_name='events',
-                             on_delete=models.CASCADE, blank=True, null=True)
+                             on_delete=models.CASCADE)
     owner = models.ForeignKey(
         'authapp.User', related_name='created_events', on_delete=models.CASCADE, blank=False)
 
@@ -52,7 +52,7 @@ class Ticket(models.Model):
     title = title = models.CharField('title', max_length=30, blank=False)
     description = models.TextField('description', validators=(
         MaxLengthValidator(256),), blank=True, null=False)
-    capcity = models.PositiveIntegerField(
+    capacity = models.PositiveIntegerField(
         'capacity', validators=(MinValueValidator(1),), blank=False)
     price = models.PositiveIntegerField(
         'price', blank=False)
@@ -68,15 +68,14 @@ class Ticket(models.Model):
         return title
 
 
+class RegConditions:
+    REGISTERED = 1
+    CANCELED = 2
+
 class Register(models.Model):
-
-    class Conditions:
-        REGISTERED = 1
-        CANCELED = 2
-
     condtion_choices = (
-        (Conditions.REGISTERED, 'registered'),
-        (Conditions.CANCELED, 'canceled'),
+        (RegConditions.REGISTERED, 'registered'),
+        (RegConditions.CANCELED, 'canceled'),
     )
     registration_id = models.CharField(
         'registration id', max_length=100, blank=True, null=False)
@@ -91,11 +90,12 @@ class Register(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            if self.ticket.capcity <= 0:
-                raise FieldError('there isn\'t any capcity to register user')
+            if self.ticket.capacity <= 0:
+                raise FieldError('there isn\'t any capacity to register user')
             self.registration_id = generate_register_id(self.user, self.ticket)
-            self.condition = Conditions.REGISTERED
-            self.ticket.update(capcity=F('capcity')-1)
+            self.condition = RegConditions.REGISTERED
+            self.ticket.capacity = F('capacity') - 1
+            self.ticket.save()
         return super().save(*args, **kwargs)
 
     def __str__(self):
@@ -110,20 +110,20 @@ class EventType(models.Model):
                             max_length=30, blank=False, null=False)
 
     def __str__(self):
-        return name
+        return self.name
 
     def __repr__(self):
-        return name
+        return self.name
 
 
 class EventCategory(models.Model):
     name = models.CharField('category', unique=True,
                             max_length=30, blank=False, null=False)
     image = models.ImageField(
-        'image', blank=True, null=True, upload_to=event_image_upload_location)
+        'image', blank=True, null=True, upload_to=event_category_image_upload_location)
 
     def __str__(self):
-        return name
+        return self.name
 
     def __repr__(self):
-        return name
+        return self.name
