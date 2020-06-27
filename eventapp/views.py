@@ -54,4 +54,9 @@ class EventListView(generics.ListAPIView):
     queryset = Event.objects.all()
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['event_category', 'event_type']
-        
+
+
+class EventView(generics.RetrieveAPIView):
+    serializer_class = EventSerializer
+    queryset = Event.objects.all()
+    lookup_field = 'id'
