@@ -80,3 +80,13 @@ class RegisterSerializer(serializers.ModelSerializer):
     extra_kwargs = {
         'registration_id': {'read_only': True},
     }
+
+
+class EventListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = (
+            'id',
+            'title',
+            'image',
+        )

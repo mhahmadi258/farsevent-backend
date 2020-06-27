@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.models import AnonymousUser
+from django_filters.rest_framework import DjangoFilterBackend
 
 from .serializers import *
 from .models import *
@@ -46,4 +47,11 @@ class RegisterView(generics.CreateAPIView):
         serializer.save(user= request.user)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+class EventListView(generics.ListAPIView):
+    serializer_class = EventListSerializer
+    queryset = Event.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['event_category', 'event_type']
         
