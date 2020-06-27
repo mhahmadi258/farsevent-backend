@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'authapp.apps.AuthappConfig',
     'eventapp.apps.EventappConfig',
+    'django_filters',
 ]
 
 # add rest framework defaults here :
