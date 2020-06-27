@@ -20,7 +20,7 @@ class EventTypeView(generics.ListAPIView):
 
 
 class EventCreationView(generics.CreateAPIView):
-    serializer_class = EventCreationSerializer
+    serializer_class = EventSerializer
     queryset = Event.objects.all()
     permission_classes = [IsAuthenticated]
 

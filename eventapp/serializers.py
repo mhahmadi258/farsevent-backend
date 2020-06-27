@@ -34,7 +34,7 @@ class TicketSerializer(serializers.ModelSerializer):
         )
 
 
-class EventCreationSerializer(serializers.ModelSerializer):
+class EventSerializer(serializers.ModelSerializer):
     tickets = TicketSerializer(many=True)
 
     class Meta:
