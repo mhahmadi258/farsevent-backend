@@ -4,6 +4,8 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import get_user_model
 import django.contrib.auth.password_validation as validators
 
+from .models import City
+
 User = get_user_model()
 
 class UserCreationSerializer(serializers.ModelSerializer):
@@ -35,3 +37,12 @@ class UserCreationSerializer(serializers.ModelSerializer):
         token = Token.objects.create(user =user)
         validated_data['token'] = token
         return validated_data
+
+
+class CitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = City
+        fields = (
+            'id',
+            'name'
+        )
