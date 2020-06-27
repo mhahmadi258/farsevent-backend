@@ -67,3 +67,16 @@ class EventCreationSerializer(serializers.ModelSerializer):
         if not value:
             raise serializers.ValidationError('tickets can\'t be empty')
         return value
+
+
+class RegisterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Register
+        fields = (
+            'registration_id',
+            'ticket',
+        )
+
+    extra_kwargs = {
+        'registration_id': {'read_only': True},
+    }
