@@ -28,7 +28,7 @@ class Event(models.Model):
     start_time = models.DateTimeField('start time', blank=False)
     end_time = models.DateTimeField('end time', blank=False)
     address = models.TextField('address', validators=(
-        MaxLengthValidator(256),), blank=True, null=False)
+        MaxLengthValidator(256),), blank=False)
     tags = models.TextField('tags', validators=(
         MaxLengthValidator(256),), blank=True, null=False)
     # ----------------------- relations ------------------------------
