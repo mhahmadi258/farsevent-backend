@@ -1,6 +1,7 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import LimitOffsetPagination
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.models import AnonymousUser
 from django_filters.rest_framework import DjangoFilterBackend
@@ -54,6 +55,7 @@ class EventListView(generics.ListAPIView):
     queryset = Event.objects.all()
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['event_category', 'event_type']
+    pagination_class = LimitOffsetPagination
 
 
 class EventView(generics.RetrieveAPIView):
