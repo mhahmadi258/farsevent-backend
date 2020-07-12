@@ -73,9 +73,7 @@ MIDDLEWARE = [
 ]
 
 # add cors settings here:
-CORS_ORIGIN_WHITELIST = (
-    'http://localhost:8082',
-)
+CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = 'farsevent.urls'
 
