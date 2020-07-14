@@ -29,6 +29,7 @@ class UserCreationSerializer(serializers.ModelSerializer):
             'password':{'write_only':True},
             'first_name':{'write_only':True},
             'last_name':{'write_only':True},
+            'image':{'write_only':True},
         }
 
     def create(self,validated_data):
