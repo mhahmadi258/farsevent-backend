@@ -19,6 +19,7 @@ class UserCreationSerializer(serializers.ModelSerializer):
             'username',
             'email',
             'phone',
+            'image',
             'password',
             'first_name',
             'last_name',
