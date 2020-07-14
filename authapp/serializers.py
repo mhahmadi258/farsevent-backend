@@ -3,6 +3,7 @@ from rest_framework.authtoken.models import Token
 
 from django.contrib.auth import get_user_model
 import django.contrib.auth.password_validation as validators
+from django.core import exceptions
 
 from .models import City
 
@@ -37,6 +38,22 @@ class UserCreationSerializer(serializers.ModelSerializer):
         token = Token.objects.create(user =user)
         validated_data['token'] = token
         return validated_data
+
+    def validate(self, attrs):
+        user = User(**attrs)
+
+        password = attrs.get('password')
+        errors = dict()
+
+        try:
+            validators.validate_password(password=password,user = user)
+        except exceptions.ValidationError as e:
+            errors['password'] = list(e.messages)
+
+        if errors:
+             raise serializers.ValidationError(errors)
+        
+        return super().validate(attrs)
 
 
 class CitySerializer(serializers.ModelSerializer):
