@@ -6,6 +6,7 @@ from rest_framework.filters import SearchFilter
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.models import AnonymousUser
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import OrderingFilter
 
 from .serializers import *
 from .models import *
@@ -29,9 +30,9 @@ class EventCreationView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        if isinstance(request.user,AnonymousUser):
+        if isinstance(request.user, AnonymousUser):
             raise PermissionDenied('login is essential for this operation')
-        serializer.save(owner= request.user)
+        serializer.save(owner=request.user)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
@@ -44,9 +45,9 @@ class RegisterView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        if isinstance(request.user,AnonymousUser):
+        if isinstance(request.user, AnonymousUser):
             raise PermissionDenied('login is essential for this operation')
-        serializer.save(user= request.user)
+        serializer.save(user=request.user)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
@@ -54,9 +55,10 @@ class RegisterView(generics.CreateAPIView):
 class EventListView(generics.ListAPIView):
     serializer_class = EventListSerializer
     queryset = Event.objects.all()
-    filter_backends = [SearchFilter,DjangoFilterBackend]
+    filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
     search_fields = ['title']
-    filterset_fields = ['event_category', 'event_type']
+    filterset_fields = ['event_category', 'event_type', 'city']
+    ordering_fields = ['title']
     pagination_class = LimitOffsetPagination
 
 
