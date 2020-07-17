@@ -14,7 +14,7 @@ class CityView(generics.ListAPIView):
     queryset = City.objects.all()
 
 
-class ProfileView(generics.RetrieveAPIView):
+class ProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticated]
 

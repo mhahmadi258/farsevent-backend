@@ -94,13 +94,12 @@ class ProfileSerializer(serializers.ModelSerializer):
             return ''
 
     def update(self, instance, validated_data):
-        password = validated_data.pop('password')
-        new_password = validated_data.pop('new_password')
-        user = self.context['request'].user
-        if not authenticate(username=user.username, password=password):
-            raise serializers.ValidationError(
-                {'password': ['wrong current password']})
-        else:
+        password = validated_data.pop(
+            'password') if 'password' in validated_data else None
+        new_password = validated_data.pop(
+            'new_password') if 'new_password' in validated_data else None
+        if password and new_password:
+            user = self._context['request'].user
             user.set_password(new_password)
             user.save()
         return super().update(instance, validated_data)
@@ -116,6 +115,14 @@ class ProfileSerializer(serializers.ModelSerializer):
                 {'none_field': ['fill both password and new password']})
 
         errors = dict()
+
+        if not password:
+            return super().validate(attrs)
+
+        user = self.context['request'].user
+        if not authenticate(username=user.username, password=password):
+            raise serializers.ValidationError(
+                {'password': ['wrong current password']})
 
         try:
             validators.validate_password(password=new_password, user=user)
