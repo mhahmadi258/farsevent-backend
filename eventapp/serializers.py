@@ -90,3 +90,18 @@ class EventListSerializer(serializers.ModelSerializer):
             'title',
             'image',
         )
+
+
+class ProfileEventShowSerailizer(serializers.ModelSerializer):
+    title = serializers.CharField(source='ticket.title', read_only=True)
+    start_time = serializers.DateTimeField(
+        source='ticket.event.start_time', read_only=True)
+
+    class Meta:
+        model = Register
+        fields = (
+            'title',
+            'start_time',
+            'registration_id',
+            'register_time',
+        )

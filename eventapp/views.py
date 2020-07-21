@@ -66,3 +66,12 @@ class EventView(generics.RetrieveAPIView):
     serializer_class = EventSerializer
     queryset = Event.objects.all()
     lookup_field = 'id'
+
+
+class ProfileEventShowView(generics.ListAPIView):
+    serializer_class = ProfileEventShowSerailizer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Register.objects.filter(user=user)
