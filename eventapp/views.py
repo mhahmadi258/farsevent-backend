@@ -30,8 +30,8 @@ class EventCreationView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         data = request.data
-        data = data.dict()
-        print(data)
+        if not isinstance(data,dict):
+            data = data.dict()
         if 'tickets' in data.keys():
             data['tickets'] = decode_ticket(data['tickets'])
         serializer = self.get_serializer(data=data)

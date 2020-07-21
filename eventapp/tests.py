@@ -232,3 +232,62 @@ class EventTestCase(APITestCase):
         response2 = self.client.get(url2)
         self.assertEqual(list(response2.data.keys()), ['id', 'title', 'image', 'description', 'start_time',
                                                        'end_time', 'tags', 'event_type', 'event_category', 'city', 'address', 'tickets'])
+
+
+class RegisterTestCase(APITestCase):
+    def setup(self):
+        self.client.post('/auth/create/', {'username': 'mh1998',
+                                           'email': 'mh1998@gmail.com',
+                                           'password': 'Qw123456Qw'}, format='json')
+
+        EventCategory.objects.create(name='cat1')
+        EventType.objects.create(name='type1')
+        City.objects.create(name='tehran')
+        token = self.client.post(
+            '/auth/login/', {'username': 'mh1998', 'password': 'Qw123456Qw'}).data.get('token')
+        auth_client = APIClient()
+        auth_client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        data1 = self.get_clean_data()
+        auth_client.post('/event/create-event/', data1, format='json')
+
+
+        def get_clean_data(self):
+            data = {
+                'title': 'matlab',
+                'image': None,
+                'description': '...',
+                'start_time': '2020-06-28T15:00:00Z',
+                'end_time': '2020-06-28T18:00:00Z',
+                'address': 'yeja',
+                'tags': '#matblab',
+                'event_type': 1,
+                'event_category': 1,
+                'city': 1,
+                'tickets': 'kheyrie&khoob ast&20&20|kheyrie2&behtar ast&20&20'
+            }
+            return data
+
+        def test_url(self):
+            url1 = '/event/register/'
+            url2 = '/event/registers/'
+
+            self.client.post('/auth/create/', {'username': 'ali1998',
+                                           'email': 'ali1998@gmail.com',
+                                           'password': 'Qw123456Qw'}, format='json')
+
+            token = self.client.post(
+            '/auth/login/', {'username': 'mh1998', 'password': 'Qw123456Qw'}).data.get('token')
+            auth_client = APIClient()
+            auth_client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+
+            response1 = self.client.get(url1)
+            self.assertEqual(response1.status_code, status.HTTP_401_UNAUTHORIZED)
+            response2 = self.client.get(url2)
+            self.assertEqual(response2.status_code, status.HTTP_404_NOT_FOUND)
+            response3 = auth_client.get(url1)
+            self.assertEqual(response3.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+            response4 = auth_client.post(url1,{},format='json')
+            self.assertEqual(response4.status_code, status.HTTP_400_BAD_REQUEST)
+            response5 = auth_client.post(url1,{"ticket" : 1},format='json')
+            self.assertEqual(response5.status_code, status.HTTP_201_CREATED)
+            
