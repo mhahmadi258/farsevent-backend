@@ -108,20 +108,7 @@ class EventCreateTestCase(APITestCase):
             'event_type': 1,
             'event_category': 1,
             'city': 1,
-            'tickets': [
-                {
-                    'title': 'kheyrie',
-                    'description': 'khoob ast',
-                    'capacity': 20,
-                    'price': 20
-                },
-                {
-                    'title': 'kheyre2',
-                    'description': 'behtar ast',
-                    'capacity': 20,
-                    'price': 20
-                }
-            ]
+            'tickets': 'kheyrie&khoob ast&20&20|kheyrie2&behtar ast&20&20'
         }
         return data
 
@@ -156,11 +143,9 @@ class EventCreateTestCase(APITestCase):
         self.assertEqual(list(response1.data.keys()), [
                          'title', 'start_time', 'end_time', 'event_type', 'event_category', 'city', 'address', 'tickets'])
         data = self.get_clean_data()
-        data['tickets'] = [{}]
+        data['title'] = ''
         response2 = auth_client.post(url, data, format='json')
         self.assertEqual(response2.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(list(response2.data.get('tickets')[0].keys()), [
-                         'title', 'capacity', 'price'])
         response3 = auth_client.post(url, self.get_clean_data(), format='json')
         self.assertEqual(response3.status_code, status.HTTP_201_CREATED)
 
@@ -170,7 +155,8 @@ class EventCreateTestCase(APITestCase):
             '/auth/login/', {'username': 'mh1998', 'password': 'Qw123456Qw'}).data.get('token')
         auth_client = APIClient()
         auth_client.credentials(HTTP_AUTHORIZATION='Token ' + token)
-        data = self.get_clean_data()['tickets'] = [{}]
+        data =  self.get_clean_data()
+        del data['tickets']
         response1 = auth_client.post(url, data, format='json')
         response2 = auth_client.post(url, self.get_clean_data(), format='json')
 
@@ -211,20 +197,7 @@ class EventTestCase(APITestCase):
             'event_type': 1,
             'event_category': 1,
             'city': 1,
-            'tickets': [
-                {
-                    'title': 'kheyrie',
-                    'description': 'khoob ast',
-                    'capacity': 20,
-                    'price': 20
-                },
-                {
-                    'title': 'kheyre2',
-                    'description': 'behtar ast',
-                    'capacity': 20,
-                    'price': 20
-                }
-            ]
+            'tickets': 'kheyrie&khoob ast&20&20|kheyrie2&behtar ast&20&20'
         }
         return data
 

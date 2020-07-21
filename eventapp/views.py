@@ -3,13 +3,14 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.filters import SearchFilter
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied ,ValidationError
 from django.contrib.auth.models import AnonymousUser
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 
 from .serializers import *
 from .models import *
+from .decoder import decode_ticket
 
 
 class EventCategoryView(generics.ListAPIView):
@@ -28,6 +29,9 @@ class EventCreationView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
+        data = request.data
+        if 'tickets' in data.keys():
+            data['tickets'] = decode_ticket(data['tickets'])
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         if isinstance(request.user, AnonymousUser):
