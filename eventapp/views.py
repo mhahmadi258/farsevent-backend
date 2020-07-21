@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.filters import SearchFilter
-from django.core.exceptions import PermissionDenied ,ValidationError
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.contrib.auth.models import AnonymousUser
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
@@ -30,9 +30,11 @@ class EventCreationView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         data = request.data
+        data = data.dict()
+        print(data)
         if 'tickets' in data.keys():
             data['tickets'] = decode_ticket(data['tickets'])
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         if isinstance(request.user, AnonymousUser):
             raise PermissionDenied('login is essential for this operation')
